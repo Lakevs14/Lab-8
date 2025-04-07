@@ -67,15 +67,15 @@
                   // the control let's the user turn on/ off layer-- ##3 here
 		var layerControl = L.control.layers(basemaps, null).addTo(map);
                 
-	         // let's add the Denver ACS data -- ##4 here
-                $.getJSON('./acs_denver_2021.geojson', function(data){
-			//convert the file into a layer
-			acsDenver2021Layer = L.geoJSON(data).addTo(map); 
+		// let's add the Denver ACS data -- ##4 here
+		$.getJSON('./acs_denver_2021.geojson', function(data) {
+			// Convert the file into a layer
+			var acsDenver2021Layer = L.geoJSON(data).addTo(map); 
 
-			//move the map to the are of the data 
-			map.panTo(acsDenver2021Layer.getBounds().getcenter()); 
+			// Move the map to the area of the data 
+			map.fitBounds(acsDenver2021Layer.getBounds()); // Fixed method: getBounds provides bounds correctly 
 
-			// add the layer to the layercontrol
+			// Add the layer to the layer control
 			layerControl.addOverlay(acsDenver2021Layer, "Census 2021");
 		});
 	  
