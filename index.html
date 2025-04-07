@@ -64,25 +64,29 @@
 			"Humanitarian OSM": HOTOSMTiles,
 			"OpenTopoMap": OpenTopoMap
 		};
-                  // the control let's the user turn on/ off layer-- ##3 here
-		var layerControl = L.control.layers(basemaps, null).addTo(map);
-                
+		
+		// Creating an empty object for overlays
+		var overlays = {}; // This will store toggleable layers
+		
+		// the control let's the user turn on/ off layer-- ##3 here
+		var layerControl = L.control.layers(basemaps, overlays).addTo(map);
+                		
 		// let's add the Denver ACS data -- ##4 here
 		$.getJSON('./acs_denver_2021.geojson', function(data) {
 			// Convert the file into a layer
-			var acsDenver2021Layer = L.geoJSON(data).addTo(map); 
+			var acsDenver2021Layer = L.geoJSON(data); // Note: Not directly added to map here
 
-			// Move the map to the area of the data 
-			map.fitBounds(acsDenver2021Layer.getBounds()); // Fixed method: getBounds provides bounds correctly 
-
-			// Add the layer to the layer control
+			// Add the layer to the layer control for toggling
 			layerControl.addOverlay(acsDenver2021Layer, "Census 2021");
+
+			// Optionally, center the map to fit the layer when toggled on
+			map.fitBounds(acsDenver2021Layer.getBounds());
 		});
 	  
 		// Adding remote GeoJSON data
 		$.getJSON('https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/ODC_TRANS_RTDPARKNRIDE_P/FeatureServer/280/query?outFields=*&where=1%3D1&f=geojson', function(data) {
-			var newLayer = L.geoJSON(data).addTo(map); // Added to the map
-			layerControl.addOverlay(newLayer, "RTD Park-N-Ride");
+			var newLayer = L.geoJSON(data).addTo(map); // Added to the map by default
+			layerControl.addOverlay(newLayer, "RTD Park-N-Ride"); // Added to toggleable options
 		});
 
 	});
