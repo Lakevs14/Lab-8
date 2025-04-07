@@ -83,11 +83,18 @@
 			map.fitBounds(acsDenver2021Layer.getBounds());
 		});
 	  
-		// Adding remote GeoJSON data
-		$.getJSON('https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/ODC_TRANS_RTDPARKNRIDE_P/FeatureServer/280/query?outFields=*&where=1%3D1&f=geojson', function(data) {
-			var newLayer = L.geoJSON(data).addTo(map); // Added to the map by default
-			layerControl.addOverlay(newLayer, "RTD Park-N-Ride"); // Added to toggleable options
-		});
+		// Adding remote GeoJSON data from the first URL
+$.getJSON('https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/ODC_TRANS_RTDPARKNRIDE_P/FeatureServer/280/query?outFields=*&where=1%3D1&f=geojson', function(data) {
+    var parkNRideLayer = L.geoJSON(data).addTo(map); // Added to the map by default
+    layerControl.addOverlay(parkNRideLayer, "RTD Park-N-Ride"); // Added to toggleable options
+});
+
+// Adding remote GeoJSON data from the second URL
+$.getJSON('https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/ODC_PARK_RECCENTER_P/FeatureServer/92/query?outFields=*&where=1%3D1&f=geojson', function(data) {
+    var recCenterLayer = L.geoJSON(data).addTo(map); // Added to the map by default
+    layerControl.addOverlay(recCenterLayer, "Park & Rec Centers"); // Added to toggleable options
+});
+
 
 	});
 </script>
