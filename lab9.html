@@ -70,11 +70,34 @@
 		
 		// the control let's the user turn on/ off layer-- ##3 here
 		var layerControl = L.control.layers(basemaps, overlays).addTo(map);
-                		
+
+	       //define a function to style chloropleth map 
+	       function style1 (feature) {
+		      d = feature.properties,PCT_POVERTY; 
+		       answer = d > 30 ? '#800026':
+			      d > 20 ? '#DB0026': 
+			      d > 15 ? '#E31A1C': 
+			      d > 10 ? '#FC4E2A':
+			      d > 5 ? 'FD8D3C':
+			      d > 3 ? 'FEB24C': 
+			      d > 1 ? 'FED976': 
+			       '#FFEDA0';
+		              styleReturn = {
+                              fillColor = answer; 
+		             weight : 1,
+			     opactiy: 1,
+			     color: 'white',
+			     dashArray: '3'm
+		             fillOpacity: 0.7
+			     };
+	                     return styleReturn;
+	                      }
+                		style1(feature);
 		// let's add the Denver ACS data -- ##4 here
 		$.getJSON('./acs_denver_2021.geojson', function(data) {
 			// Convert the file into a layer
-			var acsDenver2021Layer = L.geoJSON(data); // Note: Not directly added to map here
+			var acsDenver2021Layer = L.geoJSON(data,
+							   {style:style1}); // Note: Not directly added to map here
 
 			// Add the layer to the layer control for toggling
 			layerControl.addOverlay(acsDenver2021Layer, "Census 2021");
