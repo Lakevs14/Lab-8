@@ -76,7 +76,7 @@
 
 		// function to style my choropleth map
 		function style1 (feature) {
-			d = feature.properties.PCT_POVERTY;
+			d = feature.properties.AVG_FAM_INCOME;
 			answer = d > 30 ? 'rgb(0,90,50)' :
                                  d > 20 ? 'rgb(35,139,69)' :
                                  d > 15 ? 'rgb(65,171,93)' :
@@ -103,7 +103,7 @@
 			acsDenver2021Layer = L.geoJSON(data, 
 						       {style:style1, 
 						       onEachFeature:function(feature, layer) {
-							       layer.bindPopup("Percent Poverty: " + feature.properties.PCT_POVERTY + "%");
+							       layer.bindPopup("Average family income: " + feature.properties.AVG_FAM_INCOME + "%");
 						       }}).addTo(map);
 
 			// move the map to the area of the data
