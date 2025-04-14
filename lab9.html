@@ -77,14 +77,15 @@
 		// function to style my choropleth map
 		function style1 (feature) {
 			d = feature.properties.PCT_POVERTY;
-			answer = d > 30 ? '#800026' : 
-				d > 20 ? '#DB0026' : 
-				d > 15 ? '#E31A1C' : 
-				d > 10 ? '#FC4E2A' : 
-				d > 5 ? '#FD8D3C' : 
-				d > 3 ? '#FEB24C' : 
-				d > 1 ? '#FED976' : 
-				'#FFEDA0';
+			answer = d > 30 ? 'rgb(0,90,50)' :
+                                 d > 20 ? 'rgb(35,139,69)' :
+                                 d > 15 ? 'rgb(65,171,93)' :
+                                 d > 10 ? 'rgb(116,196,118)' :
+                                 d > 5  ? 'rgb(161,217,155)' :
+                                 d > 3  ? 'rgb(199,233,192)' :
+                                 d > 1  ? 'rgb(237,248,233)' :
+                                          'rgb(255,237,160)';
+
 			styleReturn = {
 				fillColor : answer,
 				weight : 1,
