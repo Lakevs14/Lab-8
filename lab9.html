@@ -39,37 +39,34 @@
 
     <script>
         $(document).ready(function() {
-            var map = L.map("map").setView([39.7392, -104.9903], 10);
-
+            // let's create our basemap! -- ##1 here
+             map = L.map("map").setView([39.7392, -104.9903], 10);
+            
+            // let's add three sets of background tiles - one from OSM,  one from HOT OSM, and one from openTopoMap
             var OSMTiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(map);
-
             var HOTOSMTiles = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'
             });
-
             var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
             });
-
+            // this is an object to keep track of our three basemaps -- ##2 here
             var basemaps = {
                 "OpenStreetMap": OSMTiles,
                 "Humanitarian OSM": HOTOSMTiles,
-                "OpenTopoMap": OpenTopoMap
-            };
+                "OpenTopoMap": OpenTopoMap};
+         // the control let's the user turn on / off layers -- ##3 here
+            var layerControl = L.control.layers(basemaps, null).addTo(map);
 
-            var overlays = {};
-
-            var layerControl = L.control.layers(basemaps, overlays).addTo(map);
-
-            //define a function to style choropleth map 
+            // function to style my choropleth map
             function style1(feature) {
-                var d = feature.properties.PCT_POVERTY;
-                var answer = d > 30 ? '#800026' :
+                d = feature.properties.PCT_POVERTY;
+                     answer = d > 30 ? '#800026' :
                              d > 20 ? '#DB0026' : 
                              d > 15 ? '#E31A1C' : 
                              d > 10 ? '#FC4E2A' :
@@ -86,24 +83,32 @@
                     fillOpacity: 0.7
                 };
             }
-
+            // let's add the Denver ACS data -- ##4 here
             $.getJSON('./acs_denver_2021.geojson', function(data) {
-                var acsDenver2021Layer = L.geoJSON(data, { style: style1 });
+                // covert the file into a layer
+              acsDenver2021Layer = L.geoJSON(data, 
+						       {style:style1, 
+						       onEachFeature:function(feature, layer) {
+							       layer.bindPopup("Percent Poverty: " + feature.properties.PCT_POVERTY + "%");
+						       }}).addTo(map);
 
+                // move the map to the area of the data
+                map.panTo(acsDenver2021Layer.getBounds().getCenter());
+                // add the layer to the layercontrol
                 layerControl.addOverlay(acsDenver2021Layer, "Census 2021");
-                map.fitBounds(acsDenver2021Layer.getBounds());
-            });
+		});
 
+            // let's try to add some remote DRCOG data
             $.getJSON('https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/ODC_TRANS_RTDPARKNRIDE_P/FeatureServer/280/query?outFields=*&where=1%3D1&f=geojson', function(data) {
-                var parkNRideLayer = L.geoJSON(data).addTo(map);
-                layerControl.addOverlay(parkNRideLayer, "RTD Park-N-Ride");
+                newLayer = L.geoJSON(data);
+                layerControl.addOverlay(newlayer, "RTD Park-N-Ride");
             });
 
             $.getJSON('https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/ODC_PARK_RECCENTER_P/FeatureServer/92/query?outFields=*&where=1%3D1&f=geojson', function(data) {
-                var recCenterLayer = L.geoJSON(data).addTo(map);
+                recCenterLayer = L.geoJSON(data);
                 layerControl.addOverlay(recCenterLayer, "Park & Rec Centers");
             });
-
+         // end document ready
         });
     </script>
 </head>
