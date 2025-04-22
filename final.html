@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
-	<title>Denver Choropleth Data Lab 10 Kevin Morales</title>
+	<title>Final WEBMAP Data Kevin Morales</title>
 	
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -95,14 +95,14 @@ opacity: 0.8;
 
 		// function to style my choropleth map
 		function style1 (feature) {
-			d = feature.properties.AVG_FAM_INCOME;
-			answer = d > 250000 ? 'rgb(0,90,50)' :
-                                 d > 150000 ? 'rgb(35,139,69)' :
-                                 d > 125000 ? 'rgb(65,171,93)' :
-                                 d > 100000 ? 'rgb(116,196,118)' :
-                                 d > 75000  ? 'rgb(161,217,155)' :
-                                 d > 50000  ? 'rgb(199,233,192)' :
-                                 d > 40000  ? 'rgb(237,248,233)' :
+			d = feature.properties.Obesity;
+			answer = d > 70 ? 'rgb(0,90,50)' :
+                                 d > 60 ? 'rgb(35,139,69)' :
+                                 d > 50 ? 'rgb(65,171,93)' :
+                                 d > 40 ? 'rgb(116,196,118)' :
+                                 d > 30  ? 'rgb(161,217,155)' :
+                                 d > 20  ? 'rgb(199,233,192)' :
+                                 d > 10  ? 'rgb(237,248,233)' :
                                           'rgb(247,252,245)';
 
 			styleReturn = {
@@ -117,19 +117,19 @@ opacity: 0.8;
 		}
     
 		// let's add the Denver ACS data -- ##4 here
-		$.getJSON('./acs_denver_2021.geojson', function(data) {
+		$.getJSON('./LakeCounty_Health_6754225320146509562', function(data) {
 			// covert the file into a layer
-			acsDenver2021Layer = L.geoJSON(data, 
+			lakeCountyhealthLayer = L.geoJSON(data, 
 						       {style:style1, 
 						       onEachFeature:function(feature, layer) {
-							       layer.bindPopup("Average family income: " + feature.properties.AVG_FAM_INCOME + "$");
+							       layer.bindPopup("Obesity Rate: " + feature.properties.Obesity + "%");
 						       }}).addTo(map);
 
 			// move the map to the area of the data
-			map.panTo(acsDenver2021Layer.getBounds().getCenter());
+			map.panTo(lakeCountyhealthLayer.getBounds().getCenter());
 
 			// add the layer to the layercontrol
-			layerControl.addOverlay(acsDenver2021Layer, "Census 2021");
+			layerControl.addOverlay(lakeCountyhealthLayer, "Obesity Rate");
 		});
 
 		// let's try to add some remote DRCOG data
@@ -147,10 +147,10 @@ $.getJSON('https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/OD
 		    var div = L.DomUtil.create('div', 'info legend');
 		    colors = ['rgb(247,252,245)', 'rgb(237,248,233)', 'rgb(199,233,192)', 'rgb(161,217,155)', 'rgb(116,196,118)', 'rgb(65,171,93)', 
 			      'rgb(35,139,69)', 'rgb(0,90,50)' ];
-		    labels = ['0-40,000$', '40,0001-50,000$', '50,001-75,000$', '75,001-100,000$', '100,000-125,000$',
-			     '125,000-150,000$', '150,000-250,000$', '$250,000+'];
+		    labels = ['≤10%', '20%', '30%', '40%', '50%',
+			     '60%', '70%', '%70+'];
 		    
-		    div.innerHTML = '<h3>AVG. FAMILY INCOME USD$</h3>';
+		    div.innerHTML = '<h3>National Obesity Rate 2015</h3>';
 		    for (var i = 0; i <colors.length; i++) {
 			    div.innerHTML += '<i style="background:' + colors[i] + '"></i> ' + labels[i] + '<br>';
 		    }
@@ -169,10 +169,10 @@ $.getJSON('https://services1.arcgis.com/zdB7qR0BtYrg0Xpl/arcgis/rest/services/OD
 
 <br>
 <div id="header">
-    <h1><a href="https://www.census.gov/programs-surveys/acs" style="color: rgb(47, 79, 79);">Denver 2021 American Community Survey (Census) data</a></h1>
+    <h1><a href="https://data.gov/" style="color: rgb(47, 79, 79);">Data.Gov Home of the U.S. Government's Open Data</a></h1>
 </div>
 <p id="header" style="color: rgb(47, 79, 79); width: 550px;">
-    Data from <a href="https://opendata-geospatialdenver.hub.arcgis.com/maps/619c7f836b6e4188b0e0f0458aecba26" style="color: rgb(47, 79, 79); width: 550px;">Denver Open Data Catalog/ Average Family Income</a>
+    Data from <a href="https://catalog.data.gov/dataset/national-obesity-by-state-d765a" style="color: rgb(47, 79, 79); width: 550px;">National Obesity By State 2015, Lake County, Illinois</a>
 </p>
 
 	<br>
